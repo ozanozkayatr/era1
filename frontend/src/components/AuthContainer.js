@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Login from "./Login";
 import Signup from "./Signup";
-import "./AuthContainer.css"; // For styling
+import "./AuthContainer.css";
 
 const AuthContainer = () => {
   const [isSignup, setIsSignup] = useState(false);

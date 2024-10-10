@@ -1,32 +1,29 @@
-/* Main container for the homepage */
 .homepage {
   text-align: center;
   padding: 20px;
   background-color: #f5f5f5;
-  min-height: 100vh; /* Ensures the homepage takes the full height of the viewport */
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-/* Adjusting the container for responsiveness */
 .events-container {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  justify-content: center; /* Center the event cards */
-  width: 100%; /* Ensure the event container takes up full width */
-  flex-grow: 1; /* Allow the container to grow to fill the remaining space */
+  justify-content: center;
+  width: 100%;
+  flex-grow: 1;
 }
 
-/* Event card (Facebook post style) */
 .event-card {
   width: 100%;
-  max-width: 350px; /* Adjust the width to make it look better on large screens */
-  height: 550px; /* Extended the height of the card */
+  max-width: 350px;
+  height: 550px;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 15px;
-  background-color: #333; /* Dark background */
+  background-color: #333;
   color: white;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
@@ -35,11 +32,10 @@
   justify-content: space-between;
 }
 
-/* Event Title and Description */
 .event-card h2 {
   font-size: 1.2rem;
   margin-bottom: 10px;
-  color: #ddd; /* Updated event title color */
+  color: #ddd;
 }
 
 .event-card p {
@@ -47,7 +43,6 @@
   line-height: 1.6;
 }
 
-/* Reaction buttons (Like, Comment) */
 .reaction-buttons {
   display: flex;
   justify-content: space-between;
@@ -77,64 +72,58 @@
 }
 
 .reaction-button.liked {
-  color: #f1c40f; /* Dark yellow like icon when liked */
+  color: #f1c40f;
 }
 
-/* Attending, Not Attending, and Maybe buttons */
 .attend-buttons {
   margin-top: 10px;
   display: flex;
   justify-content: space-between;
-  gap: 10px; /* Add space between buttons */
+  gap: 10px;
 }
 
-/* Individual button styling */
 .attend-button {
   padding: 5px 10px;
   border: none;
-  border-radius: 30px; /* More rounded corners */
+  border-radius: 30px;
   cursor: pointer;
   font-weight: bold;
   color: white;
   flex-grow: 1;
   transition: background-color 0.3s ease;
-  max-width: 120px; /* Adjust button width */
+  max-width: 120px;
 }
 
-/* Attending button (green) */
 .attend-button.attending {
-  background-color: #4b7a56; /* Green for attending */
+  background-color: #4b7a56;
 }
 
 .attend-button.attending.active {
-  background-color: #45a049; /* Darker green when clicked */
+  background-color: #45a049;
 }
 
-/* Not Attending button (red) */
 .attend-button.not-attending {
-  background-color: #bd4949; /* Red for not attending */
+  background-color: #bd4949;
 }
 
 .attend-button.not-attending.active {
-  background-color: #f32517; /* Darker red when clicked */
+  background-color: #f32517;
 }
 
-/* Maybe button (yellow) */
 .attend-button.maybe {
-  background-color: #a3881a; /* Yellow for maybe */
+  background-color: #a3881a;
 }
 
 .attend-button.maybe.active {
-  background-color: #f3cc32; /* Darker yellow when clicked */
+  background-color: #f3cc32;
 }
 
-/* Comment section */
 .comment-section {
   margin-top: 15px;
   padding-top: 10px;
   border-top: 1px solid #444;
-  max-height: 300px; /* Increased the max height for the comments */
-  overflow-y: auto; /* Enable scrolling for long comment lists */
+  max-height: 300px;
+  overflow-y: auto;
   overflow-x: hidden;
 }
 
@@ -149,7 +138,7 @@
   display: flex;
   align-items: flex-start;
   margin-bottom: 10px;
-  flex-direction: column; /* Stack the name and comment vertically */
+  flex-direction: column;
 }
 
 .comment-section strong {
@@ -177,13 +166,12 @@
   color: #fff;
   font-size: 14px;
   line-height: 1.4;
-  max-width: 100%; /* Ensures the comment bubble takes full width */
-  word-wrap: break-word; /* Force long words to wrap */
-  white-space: normal; /* Allow wrapping of the text */
+  max-width: 100%;
+  word-wrap: break-word;
+  white-space: normal;
   display: inline-block;
 }
 
-/* Comment input container */
 .comment-input {
   display: flex;
   align-items: center;
@@ -222,7 +210,6 @@
   color: #45a049;
 }
 
-/* Reaction count under each post */
 .reaction-count {
   display: flex;
   align-items: center;
@@ -232,9 +219,8 @@
   margin-top: 10px;
 }
 
-/* Scrollbar styling for comment section */
 .comment-section::-webkit-scrollbar {
-  width: 5px; /* Increased the width of the scrollbar */
+  width: 5px;
 }
 
 .comment-section::-webkit-scrollbar-thumb {
@@ -244,4 +230,16 @@
 
 .comment-section::-webkit-scrollbar-track {
   background-color: #333;
+}
+
+.success-message {
+  color: green;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
 }

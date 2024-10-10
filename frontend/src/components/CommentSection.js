@@ -8,7 +8,7 @@ const CommentSection = ({ comments }) => {
     e.preventDefault();
     if (newComment.trim() !== "") {
       setCommentList([...commentList, { user: "You", text: newComment }]);
-      setNewComment(""); // Clear input
+      setNewComment("");
     }
   };
 

@@ -1,8 +1,7 @@
-/* Main container for the forms */
 .auth-container {
   width: 900px;
   height: 500px;
-  background: linear-gradient(135deg, #f0f0f0, #e0e0e0); /* Soft gradient */
+  background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
   margin: auto;
   display: flex;
   position: relative;
@@ -12,7 +11,6 @@
   justify-content: space-between;
 }
 
-/* Box for each form (login and signup) */
 .auth-container .form-box {
   width: 50%;
   display: flex;
@@ -22,17 +20,14 @@
   transition: transform 0.6s ease-in-out;
 }
 
-/* Only the login form will move when switching */
 .auth-container.signup-mode .form-left {
   transform: translateX(100%);
 }
 
-/* Only the signup form will move when switching */
 .auth-container.signup-mode .form-right {
   transform: translateX(0%);
 }
 
-/* Ensure only the active form is visible */
 .auth-container .form-left,
 .auth-container .form-right {
   width: 100%;
@@ -82,17 +77,15 @@
   align-items: center;
 }
 
-/* Scoped input for auth-container */
 .auth-container input {
   padding: 10px;
   width: 100%;
   max-width: 300px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  padding: 10px 0px 10px 30px; /* Padding to create space for the icon */
+  padding: 10px 0px 10px 30px;
 }
 
-/* Scoped button for auth-container */
 .auth-container button {
   padding: 10px;
   background-color: #4b7a56;
@@ -111,7 +104,6 @@
   background-color: #218838;
 }
 
-/* Green panel for sliding effect */
 .auth-container .green-panel {
   position: absolute;
   width: 50%;
@@ -133,7 +125,6 @@
   transform: translateX(-100%);
 }
 
-/* Panel toggle button */
 .auth-container .panel-toggle-button {
   margin-top: 20px;
   padding: 10px;
@@ -154,7 +145,6 @@
   border: 1px solid #4b7a56;
 }
 
-/* Social button container */
 .auth-container .social-buttons {
   display: flex;
   justify-content: center;
@@ -162,7 +152,6 @@
   margin-bottom: 20px;
 }
 
-/* LinkedIn Button */
 .auth-container .linkedin-button {
   display: flex;
   align-items: center;
@@ -184,7 +173,6 @@
   border: 1px solid #005582;
 }
 
-/* Google Button */
 .auth-container .google-button {
   display: flex;
   align-items: center;
@@ -206,7 +194,6 @@
   border: 1px solid #c23321;
 }
 
-/* Divider for the 'Forgot your password?' */
 .auth-container .forgot-divider {
   width: 100%;
   max-width: 300px;
@@ -215,7 +202,6 @@
   margin: 20px 0;
 }
 
-/* Forgot password link */
 .auth-container .forgot-password {
   display: block;
   margin-top: 10px;
@@ -229,7 +215,6 @@
   text-decoration: underline;
 }
 
-/* Input container with icons */
 .auth-container .input-container {
   position: relative;
   width: 100%;

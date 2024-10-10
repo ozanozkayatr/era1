@@ -2,28 +2,20 @@ import React, { useState, useEffect, useRef } from "react";
 import "./Homepage.css";
 
 const EventCard = ({ event }) => {
-  // State variables for tracking attendance, comments, likes, and liked status
   const [isAttending, setIsAttending] = useState(null);
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState(event.comments || []);
   const [likes, setLikes] = useState(event.likes || 0);
   const [liked, setLiked] = useState(false);
 
-  // Reference for the comments section to ensure scrolling to the bottom
   const commentsRef = useRef(null);
 
-  /**
-   * Scroll to the bottom of the comments section when new comments are added
-   */
   const scrollToBottom = () => {
     if (commentsRef.current) {
       commentsRef.current.scrollTop = commentsRef.current.scrollHeight;
     }
   };
 
-  /**
-   * Scroll to the bottom whenever the comments are updated
-   */
   useEffect(() => {
     scrollToBottom();
   }, [comments]);
@@ -92,9 +84,6 @@ const EventCard = ({ event }) => {
     }
   };
 
-  /**
-   * Handle the toggling of the like button
-   */
   const handleLikeClick = async () => {
     try {
       const response = await fetch(

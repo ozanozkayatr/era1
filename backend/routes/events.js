@@ -5,7 +5,6 @@ require("dotenv").config();
 
 const db = new MongoDB(process.env.MONGO_DB_URL);
 
-// POST route to create a new event
 router.post("/", async (req, res) => {
   try {
     const { title, description, date, time } = req.body;
@@ -36,7 +35,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-// PUT route to update the like count of an event
 router.put("/:id/like", async (req, res) => {
   const eventId = req.params.id;
 
@@ -59,7 +57,6 @@ router.put("/:id/like", async (req, res) => {
   }
 });
 
-// POST route to add a comment to an event
 router.post("/:id/comments", async (req, res) => {
   const eventId = req.params.id;
   const { user, text } = req.body;
@@ -89,7 +86,6 @@ router.post("/:id/comments", async (req, res) => {
   }
 });
 
-// GET route to fetch all events
 router.get("/", async (req, res) => {
   try {
     const events = await db.getAllData(
@@ -98,7 +94,7 @@ router.get("/", async (req, res) => {
     );
 
     if (!events.data || events.data.length === 0) {
-      return res.status(200).json([]); // Return an empty array if no events are found
+      return res.status(200).json([]);
     }
 
     res.status(200).json(events.data);

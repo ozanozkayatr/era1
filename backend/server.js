@@ -1,17 +1,31 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const MongoDB = require("@ozanozkaya/custom-mongodb");
-require("dotenv").config();
+const mysql = require("mysql2");
+const bcrypt = require("bcrypt"); // Import bcrypt for password encryption
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// MongoDB connection
 const db = new MongoDB(process.env.MONGO_DB_URL);
+
+// MySQL connection pool
+const pool = mysql.createPool({
+  host: process.env.MYSQL_HOST,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE, // Database from .env file
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
 
 // Enable CORS for requests from your frontend
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3000", // Allow requests from the frontend
   })
 );
 
@@ -19,7 +33,75 @@ app.use(
 app.use(express.json());
 
 /**
- * POST route to create a new event (removing the nested 'data' object)
+ * POST route for user signup (SQL) with password hashing
+ * - Takes full_name, email, and password from the request body
+ * - Hashes the password using bcrypt and stores the user in the MySQL database
+ */
+app.post("/auth/signup", async (req, res) => {
+  const { full_name, email, password } = req.body;
+
+  if (!full_name || !email || !password) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  try {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds); // Hash password
+
+    const query =
+      "INSERT INTO users (full_name, email, password) VALUES (?, ?, ?)";
+    pool.execute(query, [full_name, email, hashedPassword], (err, results) => {
+      if (err) {
+        console.error("Error during signup:", err);
+        return res.status(500).json({ message: "Internal Server Error" });
+      }
+      res.status(201).json({ message: "User created successfully" });
+    });
+  } catch (error) {
+    console.error("Error during signup:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+/**
+ * POST route for user login (SQL) with password validation
+ * - Takes email and password from the request body
+ * - Checks if the user exists and compares the provided password with the stored hashed password
+ * - Responds with success if login is valid, or error message if invalid
+ */
+app.post("/auth/login", (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  const query = "SELECT * FROM users WHERE email = ?";
+  pool.execute(query, [email], async (err, results) => {
+    if (err) {
+      console.error("Error during login:", err);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+
+    if (results.length === 0) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    const user = results[0];
+
+    const isMatch = await bcrypt.compare(password, user.password); // Compare hashed passwords
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    res.status(200).json({ message: "Login successful", user: user });
+  });
+});
+
+/**
+ * POST route to create a new event (MongoDB)
+ * - Takes title, description, date, and time from the request body
+ * - Saves a new event document in MongoDB
  */
 app.post("/api/events", async (req, res) => {
   try {
@@ -52,7 +134,9 @@ app.post("/api/events", async (req, res) => {
 });
 
 /**
- * PUT route for toggling the like count of an event
+ * PUT route for toggling the like count of an event (MongoDB)
+ * - Takes the event ID and liked status (boolean) from the request body
+ * - Updates the likes count in MongoDB based on the liked status
  */
 app.put("/api/events/:id/like", async (req, res) => {
   const eventId = req.params.id;
@@ -83,7 +167,9 @@ app.put("/api/events/:id/like", async (req, res) => {
 });
 
 /**
- * POST route for adding comments to an event
+ * POST route for adding comments to an event (MongoDB)
+ * - Takes event ID, user, and text from the request body
+ * - Adds the comment to the event document in MongoDB
  */
 app.post("/api/events/:id/comments", async (req, res) => {
   const eventId = req.params.id;
@@ -118,7 +204,8 @@ app.post("/api/events/:id/comments", async (req, res) => {
 });
 
 /**
- * GET route to fetch all events
+ * GET route to fetch all events (MongoDB)
+ * - Retrieves all event documents from MongoDB
  */
 app.get("/api/events", async (req, res) => {
   try {

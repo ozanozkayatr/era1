@@ -8,7 +8,7 @@ import Homepage from "./components/Homepage";
 function App() {
   return (
     <div className="App">
-      <Homepage />
+      <AuthContainer />
     </div>
   );
 }

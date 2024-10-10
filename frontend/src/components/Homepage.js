@@ -14,7 +14,7 @@ const Homepage = () => {
           throw new Error("Failed to fetch events");
         }
         const data = await response.json();
-        setEvents(data); // If the database is empty, this will be an empty array
+        setEvents(data);
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -24,7 +24,6 @@ const Homepage = () => {
   }, []);
 
   const handleEventCreated = (newEvent) => {
-    // Add the newly created event to the list
     setEvents([...events, newEvent]);
   };
 
