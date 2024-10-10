@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from "react";
 import EventCard from "./EventCard";
 import CreateEvent from "./CreateEvent";
+import { useNavigate } from "react-router-dom";
 import "./Homepage.css";
 
 const Homepage = () => {
   const [events, setEvents] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/events");
+        const token = localStorage.getItem("token");
+        const response = await fetch("http://localhost:5000/api/events", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (!response.ok) {
           throw new Error("Failed to fetch events");
         }
@@ -27,9 +34,19 @@ const Homepage = () => {
     setEvents([...events, newEvent]);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  };
+
   return (
     <div className="homepage">
-      <h1>Welcome to the Event Tracker</h1>
+      <h1>Welcome to ERA1</h1>
+
+      {/* Logout Icon */}
+      <div className="logout-icon" onClick={handleLogout}>
+        <i className="fa fa-sign-out"></i>
+      </div>
 
       {/* Create Event Form */}
       <CreateEvent onEventCreated={handleEventCreated} />

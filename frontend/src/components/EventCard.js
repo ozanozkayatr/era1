@@ -68,7 +68,10 @@ const EventCard = ({ event }) => {
         `http://localhost:5000/api/events/${event._id}/comments`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
           body: JSON.stringify({ user: "Ozan Özkaya", text: newComment }),
         }
       );
@@ -90,7 +93,10 @@ const EventCard = ({ event }) => {
         `http://localhost:5000/api/events/${event._id}/like`,
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
           body: JSON.stringify({ liked: !liked }),
         }
       );
@@ -157,7 +163,7 @@ const EventCard = ({ event }) => {
           className={`reaction-button ${liked ? "liked" : ""}`}
           onClick={handleLikeClick}
         >
-          <i className="fa fa-thumbs-up"></i> {liked ? "Like" : "Like"}
+          <i className="fa fa-thumbs-up"></i> {liked ? "Liked" : "Like"}
         </button>
         <button className="reaction-button">
           <i className="fa fa-comment"></i> Comment

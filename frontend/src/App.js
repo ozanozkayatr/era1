@@ -1,15 +1,33 @@
-// src/App.js
-
-import React from "react";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AuthContainer from "./components/AuthContainer";
-import "./App.css";
 import Homepage from "./components/Homepage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem("token")
+  );
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsAuthenticated(false);
+  };
+
   return (
-    <div className="App">
-      <AuthContainer />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<AuthContainer onLogout={handleLogout} />} />
+        <Route
+          path="/homepage"
+          element={
+            <ProtectedRoute>
+              <Homepage />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 

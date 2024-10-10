@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const Login = ({ onLoginSuccess }) => {
+  const [email, setEmail] = useState("admin@admin");
+  const [password, setPassword] = useState("admin");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -28,6 +28,8 @@ const Login = () => {
         setSuccessMessage(
           `Welcome, ${data.user.full_name || data.user.email}!`
         );
+        localStorage.setItem("token", data.token);
+        onLoginSuccess();
       }
     } catch (error) {
       console.error("Error during login:", error);
