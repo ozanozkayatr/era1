@@ -1,0 +1,129 @@
+[
+  {
+    "id": 1,
+    "title": "Tech Conference 2024",
+    "description": "A conference to explore the latest in AI, VR, and tech innovations.",
+    "date": "2024-10-15 09:00 AM",
+    "comments": [
+      { "user": "Alice Johnson", "text": "Can't wait to attend!" },
+      { "user": "Mark Daniels", "text": "This will be great for networking!" }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "AI Workshop",
+    "description": "A hands-on workshop on developing AI-powered applications.",
+    "date": "2024-11-12 01:00 PM",
+    "comments": [
+      { "user": "Sam Lee", "text": "This is exactly what I need!" },
+      { "user": "Jane Smith", "text": "Is this event beginner-friendly?" }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Digital Marketing Meetup",
+    "description": "Learn the latest trends and strategies in digital marketing.",
+    "date": "2024-11-20 06:00 PM",
+    "comments": [
+      {
+        "user": "John Doe",
+        "text": "I've been looking for a meetup like this!"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Blockchain Summit",
+    "description": "Discussing the future of blockchain technology and its impact on industries.",
+    "date": "2024-12-05 10:30 AM",
+    "comments": [
+      {
+        "user": "Sarah Clark",
+        "text": "Blockchain is the future, excited for this event!"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "title": "Startup Pitch Night",
+    "description": "Join us for a night of startup pitches and investor networking.",
+    "date": "2024-12-10 07:00 PM",
+    "comments": [
+      { "user": "Ryan Turner", "text": "Hope my startup gets noticed!" },
+      { "user": "Lily White", "text": "Looking forward to seeing new ideas." }
+    ]
+  },
+  {
+    "id": 6,
+    "title": "Data Science Bootcamp",
+    "description": "An immersive bootcamp on data science tools, techniques, and best practices.",
+    "date": "2025-01-07 08:00 AM",
+    "comments": []
+  },
+  {
+    "id": 7,
+    "title": "Cybersecurity Seminar",
+    "description": "A seminar focusing on the latest trends and threats in cybersecurity.",
+    "date": "2025-01-12 02:00 PM",
+    "comments": [
+      {
+        "user": "Emma Brown",
+        "text": "Cybersecurity is critical, glad to see this event!"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "title": "UX/UI Design Workshop",
+    "description": "Improve your design skills with this hands-on UX/UI workshop.",
+    "date": "2025-02-15 11:00 AM",
+    "comments": []
+  },
+  {
+    "id": 9,
+    "title": "Cloud Computing Conference",
+    "description": "Exploring the future of cloud computing and its influence on businesses.",
+    "date": "2025-03-03 10:00 AM",
+    "comments": [
+      {
+        "user": "David Green",
+        "text": "Cloud computing is the future, can't wait!"
+      },
+      { "user": "Nina Scott", "text": "Anyone else attending virtually?" }
+    ]
+  },
+  {
+    "id": 10,
+    "title": "JavaScript Hackathon",
+    "description": "Test your JavaScript skills at this fun and challenging hackathon.",
+    "date": "2025-03-22 09:00 AM",
+    "comments": [
+      { "user": "Michael Lee", "text": "Looking forward to the challenge!" }
+    ]
+  },
+  {
+    "id": 11,
+    "title": "Leadership Summit",
+    "description": "A summit for leaders to discuss strategies for team and company growth.",
+    "date": "2025-04-10 04:00 PM",
+    "comments": [
+      {
+        "user": "Olivia Wilson",
+        "text": "Excited to hear from top leaders in the field."
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "title": "Mobile App Development Bootcamp",
+    "description": "Learn how to develop mobile applications in this beginner-to-advanced bootcamp.",
+    "date": "2025-05-01 08:30 AM",
+    "comments": [
+      {
+        "user": "Sophia Davis",
+        "text": "This bootcamp is going to be amazing!"
+      },
+      { "user": "Ethan Taylor", "text": "Is this bootcamp remote-friendly?" }
+    ]
+  }
+]

@@ -1,0 +1,25 @@
+.App {
+  /* Reset the text alignment to default for the new design */
+  text-align: left;
+  display: flex;
+  justify-content: center; /* Centers the content horizontally */
+  align-items: center; /* Centers the content vertically */
+  min-height: 100vh; /* Makes sure the app takes up the full viewport height */
+  background-color: #f0f0f0; /* Optional: Add a light background color */
+}
+
+/* Keeping the .App-header intact, but you may not need this part anymore */
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}

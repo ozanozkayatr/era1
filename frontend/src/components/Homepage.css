@@ -1,0 +1,247 @@
+/* Main container for the homepage */
+.homepage {
+  text-align: center;
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh; /* Ensures the homepage takes the full height of the viewport */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Adjusting the container for responsiveness */
+.events-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center; /* Center the event cards */
+  width: 100%; /* Ensure the event container takes up full width */
+  flex-grow: 1; /* Allow the container to grow to fill the remaining space */
+}
+
+/* Event card (Facebook post style) */
+.event-card {
+  width: 100%;
+  max-width: 350px; /* Adjust the width to make it look better on large screens */
+  height: 550px; /* Extended the height of the card */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  background-color: #333; /* Dark background */
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Event Title and Description */
+.event-card h2 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #ddd; /* Updated event title color */
+}
+
+.event-card p {
+  color: #bbb;
+  line-height: 1.6;
+}
+
+/* Reaction buttons (Like, Comment) */
+.reaction-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 10px 0;
+  border-top: 1px solid #444;
+  border-bottom: 1px solid #444;
+}
+
+.reaction-button {
+  background-color: transparent;
+  border: none;
+  color: #bbb;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.reaction-button i {
+  font-size: 18px;
+}
+
+.reaction-button:hover {
+  color: #fff;
+}
+
+.reaction-button.liked {
+  color: #f1c40f; /* Dark yellow like icon when liked */
+}
+
+/* Attending, Not Attending, and Maybe buttons */
+.attend-buttons {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px; /* Add space between buttons */
+}
+
+/* Individual button styling */
+.attend-button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 30px; /* More rounded corners */
+  cursor: pointer;
+  font-weight: bold;
+  color: white;
+  flex-grow: 1;
+  transition: background-color 0.3s ease;
+  max-width: 120px; /* Adjust button width */
+}
+
+/* Attending button (green) */
+.attend-button.attending {
+  background-color: #4b7a56; /* Green for attending */
+}
+
+.attend-button.attending.active {
+  background-color: #45a049; /* Darker green when clicked */
+}
+
+/* Not Attending button (red) */
+.attend-button.not-attending {
+  background-color: #bd4949; /* Red for not attending */
+}
+
+.attend-button.not-attending.active {
+  background-color: #f32517; /* Darker red when clicked */
+}
+
+/* Maybe button (yellow) */
+.attend-button.maybe {
+  background-color: #a3881a; /* Yellow for maybe */
+}
+
+.attend-button.maybe.active {
+  background-color: #f3cc32; /* Darker yellow when clicked */
+}
+
+/* Comment section */
+.comment-section {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #444;
+  max-height: 300px; /* Increased the max height for the comments */
+  overflow-y: auto; /* Enable scrolling for long comment lists */
+  overflow-x: hidden;
+}
+
+/* Styling for the comments */
+.comment-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.comment-section li {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  flex-direction: column; /* Stack the name and comment vertically */
+}
+
+.comment-section strong {
+  color: #6eb980;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.comment-section .comment-bubble {
+  background-color: #444;
+  padding: 10px 15px;
+  border-radius: 18px;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.4;
+  max-width: 100%;
+  display: inline-block;
+  word-wrap: break-word;
+}
+
+.comment-section .comment-text {
+  background-color: #444;
+  padding: 10px 15px;
+  border-radius: 18px;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.4;
+  max-width: 100%; /* Ensures the comment bubble takes full width */
+  word-wrap: break-word; /* Force long words to wrap */
+  white-space: normal; /* Allow wrapping of the text */
+  display: inline-block;
+}
+
+/* Comment input container */
+.comment-input {
+  display: flex;
+  align-items: center;
+  background-color: #444;
+  padding: 5px 10px;
+  border-radius: 20px;
+  color: #fff;
+  margin-top: 10px;
+  width: 90%;
+  border: none;
+  position: relative;
+}
+
+.comment-input input {
+  flex-grow: 1;
+  padding: 5px 10px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  border-radius: 20px;
+  padding-right: 30px;
+}
+
+.comment-input i {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  color: #4b7a56;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.comment-input i:hover {
+  color: #45a049;
+}
+
+/* Reaction count under each post */
+.reaction-count {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #bbb;
+  margin-top: 10px;
+}
+
+/* Scrollbar styling for comment section */
+.comment-section::-webkit-scrollbar {
+  width: 5px; /* Increased the width of the scrollbar */
+}
+
+.comment-section::-webkit-scrollbar-thumb {
+  background-color: #4b7a56;
+  border-radius: 5px;
+}
+
+.comment-section::-webkit-scrollbar-track {
+  background-color: #333;
+}
