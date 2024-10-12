@@ -3,101 +3,127 @@
 
 ## Project Overview
 
-Era1 is an event planning application designed to allow users to create, view, join events, and leave comments. This project is part of a technical evaluation, focusing on implementing best practices and following the 12-factor app principles.
+This repository contains the ERA1 project, a web-based event planning application built using **React.js** for the frontend and **Node.js** (with Express) for the backend. It enables users to create events, attend them, add comments, and like events. The project follows **12-factor app principles** and leverages **JWT-based authentication** for secure access.
 
-## Features
+### Key Features Implemented
 
-- User Authentication: Users can register and log in using JWT-based authentication.
-- Event Creation: Authenticated users can create new events.
-- Event Management: Users can view and manage events they are part of.
-- Commenting System: Users can leave comments on events and participate in discussions.
-- Responsive Design: The application provides a user-friendly, responsive interface built with React.js.
+#### 1. **Authentication & Authorization**
 
-## Tech Stack
+- Implemented JWT-based authentication for secure login.
+- Users can log in using their email and password.
+- Session management ensures users stay logged in across page refreshes.
 
-### Frontend
-- **React.js**: Used to build the user interface with a focus on responsiveness and interactivity.
+#### 2. **Event Management**
 
-### Backend
-1. **User Authentication Service**
-   - **Node.js & Express.js**: Used to handle user authentication and profile management.
-   - **JWT (JSON Web Tokens)**: Secures user sessions and handles authentication.
-   - **SQL Database**: Stores user information in a relational database.
+- Users can create events with a **title, description, date, and time**.
+- **Descriptions are limited to 10 words**, with a "See More" option to display the entire content using smooth animations.
+- **Form validation** ensures all required fields are filled out during event creation.
 
-2. **Event & Comment Management Service**
-   - **Backend Technology**: Node.js (or your choice of backend technology).
-   - **NoSQL Database (e.g., MongoDB)**: Stores event details and user comments for flexibility and scalability.
+#### 3. **Attending Events**
 
-### Deployment Environment
-- Prepared to run on **Debian-based distributions** such as Pardus, Debian, Ubuntu, etc.
+- Users can mark their status as:
+  - Attending
+  - Maybe
+  - Not attending
+- **Attending status is stored in the backend** and reflects accurately upon page reload.
+- **Optimistic UI updates** ensure the selected status reflects immediately.
+- Forced **page refresh** resolves inconsistencies with real-time state updates.
 
-## Setup Instructions
+#### 4. **Liking Events**
+
+- Users can like and unlike events.
+- Implemented **real-time UI updates** for the like button, ensuring state synchronization with the backend.
+- **Fixed issues with like state management** to avoid reverting to the previous state.
+
+#### 5. **Comments System**
+
+- Users can add comments on events.
+- **Scroll-to-bottom functionality** ensures the latest comments are visible.
+- The comments are **stored in the backend** and retrieved on page load.
+- Implemented smooth animations and styling for comments.
+
+#### 6. **Frontend Enhancements**
+
+- Created a **responsive user interface** using CSS.
+- Buttons change appearance based on user interaction to indicate the current state (e.g., attending status).
+- Added **hover effects** and **active states** for better user experience.
+- Used **CSS-based sliding containers** to show or hide content (e.g., event descriptions).
+
+#### 7. **Backend Integration**
+
+- Developed API endpoints to:
+  - Create events (`POST /api/events`)
+  - Update attendance status (`PUT /api/events/:id/attend`)
+  - Add comments (`POST /api/events/:id/comments`)
+  - Manage likes (`PUT /api/events/:id/like`)
+- **Handled optimistic UI updates** for better responsiveness.
+
+#### 8. **Project Management**
+
+- Followed **12-factor app principles**.
+- Frequent commits pushed to a **test branch**.
+- Created a **production branch** and merged the test branch after completing tests.
+
+### Tech Stack
+
+- **Frontend:** React.js, CSS
+- **Backend:** Node.js, Express
+- **Database:** MongoDB, MySQL
+- **Authentication:** JWT
+- **Version Control:** Git & GitHub
+
+### Setup Instructions
 
 1. Clone the repository:
+
    ```bash
-   git clone https://github.com/yourusername/era1.git
+   git clone git@github.com:ozanozkayatr/era1.git
    cd era1
    ```
 
-2. Install dependencies for both the frontend and backend services:
+2. Install dependencies:
+
    ```bash
-   # Install frontend dependencies
    cd frontend
    npm install
-   
-   # Install backend dependencies
+   cd ..
    cd backend
    npm install
    ```
 
-3. Set up environment variables:
-   - Create a `.env` file in the root directory of both the frontend and backend.
-   - For the authentication service, configure database credentials and JWT secret.
-   - For the event/comment service, configure the connection to your NoSQL database.
+3. Start the development server:
 
-4. Start the development servers:
    ```bash
-   # Start frontend
-   cd frontend
-   npm start
-
-   # Start backend services
-   cd backend
    npm start
    ```
 
-## Project Structure
+4. Backend:
 
-```plaintext
-era1/
-│
-├── frontend/               # Frontend code with React.js
-│   ├── src/
-│   └── public/
-│
-├── backend/                # Backend code for authentication and event management
-│   ├── auth-service/       # Authentication service with Node.js and SQL
-│   ├── event-service/      # Event and comment management service with NoSQL
-│   └── shared/             # Shared utilities and configurations
-│
-├── README.md               # Project documentation
-└── .gitignore              # Files and directories to be ignored by Git
-```
+   - Set up the backend with the required MongoDB and MySQL configurations.
+   - Run the backend server.
 
-## 12-Factor App Principles
+5. Create a `.env` file with the following content:
 
-This application follows the [12-factor app principles](https://12factor.net/) to ensure scalability, portability, and robustness. Key principles implemented include:
+   ```
+   MONGO_DB_URL='mongodb-connection-string'
+   DB_NAME="db-name"
+   COLLECTION_NAME="collection-name"
 
-- **Configuration via environment variables**
-- **Port binding**
-- **Stateless processes**
-- **Separation of build and run stages**
+   MYSQL_HOST=localhost
+   MYSQL_USER=root
+   MYSQL_PASSWORD="your-password"
+   MYSQL_DATABASE="your-database"
 
-## Future Enhancements (Optional)
+   JWT_SECRET="your-jwt-secret"
+   ```
 
-- Adding media attachments to events.
-- Creating polls or surveys for event participants.
-- Inviting friends to events.
+6. Run the backend:
+   ```bash
+   node server.js
+   ```
+
+
+
 
 ## Author
 
