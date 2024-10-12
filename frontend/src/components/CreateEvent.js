@@ -6,6 +6,17 @@ const CreateEvent = ({ onEventCreated }) => {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+  const [descriptionError, setDescriptionError] = useState("");
+
+  const handleDescriptionChange = (e) => {
+    const words = e.target.value.split(" ");
+    if (words.length <= 10) {
+      setDescription(e.target.value);
+      setDescriptionError("");
+    } else {
+      setDescriptionError("Description cannot exceed 10 words.");
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,11 +68,14 @@ const CreateEvent = ({ onEventCreated }) => {
                 required
               />
               <textarea
-                placeholder="Description"
+                placeholder="Description (Max 10 words)"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={handleDescriptionChange}
                 required
               />
+              {descriptionError && (
+                <div className="error-message">{descriptionError}</div>
+              )}
               <input
                 type="date"
                 value={date}

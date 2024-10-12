@@ -1,14 +1,28 @@
 import React, { useState, useEffect, useRef } from "react";
+import { jwtDecode } from "jwt-decode";
 import "./Homepage.css";
 
 const EventCard = ({ event }) => {
-  const [isAttending, setIsAttending] = useState(null);
+  const [attendingStatus, setAttendingStatus] = useState(null);
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState(event.comments || []);
-  const [likes, setLikes] = useState(event.likes || 0);
+  const [likedBy, setLikedBy] = useState(event.likedBy || []);
   const [liked, setLiked] = useState(false);
 
   const commentsRef = useRef(null);
+  const token = localStorage.getItem("token");
+  const user = token ? jwtDecode(token) : null;
+
+  useEffect(() => {
+    const initialStatus = event.attendance?.find(
+      (att) => att.email === user.email
+    )?.status;
+    setAttendingStatus(initialStatus || null);
+
+    if (user && likedBy.includes(user.email)) {
+      setLiked(true);
+    }
+  }, [event, user, likedBy]);
 
   const scrollToBottom = () => {
     if (commentsRef.current) {
@@ -20,45 +34,66 @@ const EventCard = ({ event }) => {
     scrollToBottom();
   }, [comments]);
 
-  /**
-   * Format the event date and return the day, formatted date, and time
-   * @param {string} dateString - The date string from the event object
-   * @returns {Object} - Returns an object containing the dayName, formattedDate, and time
-   */
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const days = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
-    const dayName = days[date.getDay()];
-    const formattedDate = date.toLocaleDateString();
-    const time = date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    return { dayName, formattedDate, time };
+  const handleAttendingClick = async (status) => {
+    setAttendingStatus(status);
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/events/${event._id}/attend`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ email: user.email, status }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to update attendance");
+
+      console.log("Attendance successfully updated.");
+      window.location.reload();
+    } catch (error) {
+      console.error("Error updating attendance:", error);
+    }
   };
 
-  const { dayName, formattedDate, time } = formatDate(event.date);
+  const handleLikeClick = async () => {
+    const isLiked = liked;
+    const updatedLikedBy = isLiked
+      ? likedBy.filter((email) => email !== user.email)
+      : [...likedBy, user.email];
 
-  /**
-   * Handle the selection of attendance status
-   * @param {boolean|string} status - The status indicating whether attending, maybe, or not attending
-   */
-  const handleAttendingClick = (status) => {
-    setIsAttending(status);
+    setLikedBy(updatedLikedBy);
+    setLiked(!isLiked);
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/events/${event._id}/like`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ email: user.email, liked: !isLiked }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to update likes");
+
+      const updatedEvent = await response.json();
+      setLikedBy(updatedEvent.likedBy);
+      setLiked(updatedEvent.likedBy.includes(user.email));
+    } catch (error) {
+      console.error("Error updating likes:", error);
+
+      setLikedBy(likedBy);
+      setLiked(isLiked);
+    }
   };
 
-  /**
-   * Handle the submission of a new comment
-   * @param {Object} e - Event object from form submission
-   */
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
@@ -70,91 +105,52 @@ const EventCard = ({ event }) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ user: "Ozan Özkaya", text: newComment }),
+          body: JSON.stringify({ user: user?.full_name, text: newComment }),
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to add comment");
-      }
+      if (!response.ok) throw new Error("Failed to add comment");
 
-      setComments([...comments, { user: "Ozan Özkaya", text: newComment }]);
+      setComments([...comments, { user: user?.full_name, text: newComment }]);
       setNewComment("");
     } catch (error) {
       console.error("Error adding comment:", error);
     }
   };
 
-  const handleLikeClick = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:5000/api/events/${event._id}/like`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify({ liked: !liked }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to update likes");
-      }
-
-      setLikes(liked ? likes - 1 : likes + 1);
-      setLiked(!liked);
-    } catch (error) {
-      console.error("Error updating likes:", error);
-    }
-  };
+  const { dayName, formattedDate, time } = formatDate(event.date);
 
   return (
     <div className="event-card">
-      <div className="event-card-header">
-        <h2>{event.title}</h2>
-        <p>{event.description}</p>
-        <p>
-          <strong>
-            {formattedDate}, {dayName}
-          </strong>
-        </p>
-        <p>
-          <strong>Time:</strong> {time}
-        </p>
-      </div>
+      <h2>{event.title}</h2>
+      <p>{event.description}</p>
+      <p>
+        <strong>
+          {formattedDate}, {dayName}
+        </strong>
+      </p>
+      <p>
+        <strong>Time:</strong> {time}
+      </p>
+
       <div className="attend-buttons">
-        <button
-          className={`attend-button attending ${
-            isAttending === true ? "active" : ""
-          }`}
-          onClick={() => handleAttendingClick(true)}
-        >
-          Attending
-        </button>
-        <button
-          className={`attend-button maybe ${
-            isAttending === "maybe" ? "active" : ""
-          }`}
-          onClick={() => handleAttendingClick("maybe")}
-        >
-          Maybe
-        </button>
-        <button
-          className={`attend-button not-attending ${
-            isAttending === false ? "active" : ""
-          }`}
-          onClick={() => handleAttendingClick(false)}
-        >
-          Not Attending
-        </button>
+        {["attending", "maybe", "not-attending"].map((status) => (
+          <button
+            key={status}
+            className={`attend-button ${status} ${
+              attendingStatus === status ? "active" : "greyed"
+            }`}
+            onClick={() => handleAttendingClick(status)}
+          >
+            {status.charAt(0).toUpperCase() + status.slice(1)}
+          </button>
+        ))}
       </div>
 
       <div className="reaction-count">
-        <i className="fa fa-thumbs-up"></i> {likes}
+        <i className="fa fa-thumbs-up"></i> {likedBy.length}
         <span>{comments.length} comments</span>
       </div>
 
@@ -192,7 +188,7 @@ const EventCard = ({ event }) => {
         <div className="comment-input">
           <input
             type="text"
-            placeholder="Reply as Ozan Özkaya"
+            placeholder={`Reply as ${user?.full_name}`}
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
           />
@@ -201,6 +197,26 @@ const EventCard = ({ event }) => {
       </form>
     </div>
   );
+};
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const dayName = days[date.getDay()];
+  const formattedDate = date.toLocaleDateString();
+  const time = date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  return { dayName, formattedDate, time };
 };
 
 export default EventCard;

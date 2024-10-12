@@ -9,10 +9,10 @@ const jwt = require("jsonwebtoken");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// MongoDB connection
+// Initialize MongoDB connection
 const db = new MongoDB(process.env.MONGO_DB_URL);
 
-// MySQL connection pool
+// Initialize MySQL connection pool
 const pool = mysql.createPool({
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,
@@ -23,25 +23,26 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
+// Enable CORS for frontend requests
 app.use(
   cors({
     origin: "http://localhost:3000",
   })
 );
 
+// Middleware to parse JSON request bodies
 app.use(express.json());
 
 /**
- * Function to authenticate JWT token
- * - This middleware checks for the JWT token in the Authorization header
- * - If token is valid, it allows the request to proceed
- * - Otherwise, it responds with 401 (Unauthorized) or 403 (Forbidden)
+ * Middleware: Authenticate JWT Token
+ * Verifies the token and attaches user data to the request object.
  */
 const authenticateToken = (req, res, next) => {
-  const token = req.headers["authorization"]?.split(" ")[1]; // Get token from Authorization header
+  const token = req.headers["authorization"]?.split(" ")[1];
 
-  if (!token)
+  if (!token) {
     return res.status(401).json({ message: "Access denied, token missing!" });
+  }
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) return res.status(403).json({ message: "Invalid token" });
@@ -51,9 +52,8 @@ const authenticateToken = (req, res, next) => {
 };
 
 /**
- * POST route for user signup (SQL) with password hashing
- * - Takes full_name, email, and password from the request body
- * - Hashes the password using bcrypt and stores the user in the MySQL database
+ * Route: User Signup
+ * Creates a new user in the SQL database after hashing the password.
  */
 app.post("/auth/signup", async (req, res) => {
   const { full_name, email, password } = req.body;
@@ -63,29 +63,22 @@ app.post("/auth/signup", async (req, res) => {
   }
 
   try {
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
+    const hashedPassword = await bcrypt.hash(password, 10);
     const query =
       "INSERT INTO users (full_name, email, password) VALUES (?, ?, ?)";
-    pool.execute(query, [full_name, email, hashedPassword], (err, results) => {
-      if (err) {
-        console.error("Error during signup:", err);
+    pool.execute(query, [full_name, email, hashedPassword], (err) => {
+      if (err)
         return res.status(500).json({ message: "Internal Server Error" });
-      }
       res.status(201).json({ message: "User created successfully" });
     });
   } catch (error) {
-    console.error("Error during signup:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
 /**
- * POST route for user login (SQL) with password validation
- * - Takes email and password from the request body
- * - Checks if the user exists and compares the provided password with the stored hashed password
- * - If successful, generates and returns a JWT token along with user details
+ * Route: User Login
+ * Verifies user credentials and returns a JWT token if valid.
  */
 app.post("/auth/login", (req, res) => {
   const { email, password } = req.body;
@@ -96,36 +89,29 @@ app.post("/auth/login", (req, res) => {
 
   const query = "SELECT * FROM users WHERE email = ?";
   pool.execute(query, [email], async (err, results) => {
-    if (err) {
-      console.error("Error during login:", err);
-      return res.status(500).json({ message: "Internal Server Error" });
-    }
-
-    if (results.length === 0) {
+    if (err || results.length === 0) {
       return res.status(400).json({ message: "User not found" });
     }
 
     const user = results[0];
-
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const token = jwt.sign(
-      { email: user.email, full_name: user.full_name },
+      { id: user.id, email: user.email, full_name: user.full_name },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
-    res.status(200).json({ message: "Login successful", token, user: user });
+    res.status(200).json({ message: "Login successful", token, user });
   });
 });
 
 /**
- * Protected route for fetching events (MongoDB) - Requires authentication
- * - Fetches all events from the MongoDB collection
- * - JWT token is required to access this route
+ * Route: Fetch Events
+ * Retrieves all events from MongoDB.
  */
 app.get("/api/events", authenticateToken, async (req, res) => {
   try {
@@ -134,38 +120,28 @@ app.get("/api/events", authenticateToken, async (req, res) => {
       process.env.COLLECTION_NAME
     );
 
-    if (!events.data || events.data.length === 0) {
-      return res.status(200).json([]);
-    }
-
-    res.status(200).json(events.data);
+    res.status(200).json(events.data || []);
   } catch (error) {
-    console.error("Error fetching events:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
 /**
- * POST route to create a new event (MongoDB) - Requires authentication
- * - Takes title, description, date, and time from the request body
- * - Saves a new event document in MongoDB
- * - JWT token is required to access this route
+ * Route: Create Event
+ * Creates a new event in MongoDB.
  */
 app.post("/api/events", authenticateToken, async (req, res) => {
+  const { title, description, date, time } = req.body;
+
   try {
-    const { title, description, date, time } = req.body;
-
-    if (!title || !description || !date || !time) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-
     const newEvent = {
       title,
       description,
       date,
       time,
       comments: [],
-      likes: 0,
+      likedBy: [],
+      attendance: [],
     };
 
     const result = await db.addData(
@@ -176,16 +152,13 @@ app.post("/api/events", authenticateToken, async (req, res) => {
 
     res.status(201).json(result);
   } catch (error) {
-    console.error("Error creating event:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
 /**
- * POST route for adding comments to an event (MongoDB) - Requires authentication
- * - Takes event ID, user, and text from the request body
- * - Adds the comment to the event document in MongoDB
- * - JWT token is required to access this route
+ * Route: Add Comment
+ * Adds a comment to an event's comments array.
  */
 app.post("/api/events/:id/comments", authenticateToken, async (req, res) => {
   const eventId = req.params.id;
@@ -202,7 +175,6 @@ app.post("/api/events/:id/comments", authenticateToken, async (req, res) => {
       process.env.COLLECTION_NAME,
       process.env.DB_NAME
     );
-
     const result = await model.updateOne(
       { _id: eventId },
       { $push: { comments: { user, text } } }
@@ -214,20 +186,47 @@ app.post("/api/events/:id/comments", authenticateToken, async (req, res) => {
 
     res.status(200).json({ message: "Comment added successfully" });
   } catch (error) {
-    console.error("Error adding comment:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
 /**
- * PUT route for toggling the like count of an event (MongoDB) - Requires authentication
- * - Takes the event ID and liked status (boolean) from the request body
- * - Updates the likes count in MongoDB based on the liked status
- * - JWT token is required to access this route
+ * Route: Toggle Like
+ * Adds or removes a user from the event's likedBy array.
  */
 app.put("/api/events/:id/like", authenticateToken, async (req, res) => {
   const eventId = req.params.id;
-  const { liked } = req.body;
+  const { email, liked } = req.body;
+
+  try {
+    const model = await db.getModel(
+      process.env.COLLECTION_NAME,
+      process.env.DB_NAME
+    );
+    const update = liked
+      ? { $addToSet: { likedBy: email } }
+      : { $pull: { likedBy: email } };
+
+    const result = await model.updateOne({ _id: eventId }, update);
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+
+    const updatedEvent = await model.findOne({ _id: eventId });
+    res.status(200).json(updatedEvent);
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+/**
+ * Route: Update Attendance
+ * Updates the user's attendance status for the event.
+ */
+app.put("/api/events/:id/attend", authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  const { email, status } = req.body;
 
   try {
     const model = await db.getModel(
@@ -235,20 +234,18 @@ app.put("/api/events/:id/like", authenticateToken, async (req, res) => {
       process.env.DB_NAME
     );
 
-    const incrementValue = liked ? 1 : -1;
-
+    await model.updateOne({ _id: id }, { $pull: { attendance: { email } } });
     const result = await model.updateOne(
-      { _id: eventId },
-      { $inc: { likes: incrementValue } }
+      { _id: id },
+      { $push: { attendance: { email, status } } }
     );
 
     if (result.modifiedCount === 0) {
       return res.status(404).json({ message: "Event not found" });
     }
 
-    res.status(200).json({ message: `Like ${liked ? "added" : "removed"}` });
+    res.status(200).json({ message: "Attendance updated" });
   } catch (error) {
-    console.error("Error updating likes:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });

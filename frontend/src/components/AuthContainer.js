@@ -1,9 +1,8 @@
-// src/components/AuthContainer.js
-
 import React, { useState } from "react";
 import Login from "./Login";
 import Signup from "./Signup";
 import { useNavigate } from "react-router-dom";
+import RingLoader from "react-spinners/RingLoader";
 import "./AuthContainer.css";
 
 const AuthContainer = () => {
@@ -11,14 +10,14 @@ const AuthContainer = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(
     !!localStorage.getItem("token")
   );
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const toggleForm = () => {
-    setIsSignup(!isSignup);
-  };
+  const toggleForm = () => setIsSignup((prev) => !prev);
 
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
+    setIsLoading(false);
     navigate("/homepage");
   };
 
@@ -28,24 +27,30 @@ const AuthContainer = () => {
     navigate("/");
   };
 
+  const handleLoading = (loading) => setIsLoading(loading);
+
   return (
     <div className="App">
-      {isAuthenticated && (
-        <div className="logout-icon" onClick={handleLogout}>
-          <i className="fa fa-sign-out"></i> {/* Logout Icon */}
-        </div>
-      )}
       <div className={`auth-container ${isSignup ? "signup-mode" : ""}`}>
-        <div className="form-box form-left">
+        {isLoading && (
+          <div className="spinner-overlay">
+            <RingLoader color="#36d7b7" size={75} />
+          </div>
+        )}
+
+        <div className={`form-box form-left ${isLoading ? "loading" : ""}`}>
           {!isSignup && (
             <>
               <h2>Welcome Back!</h2>
-              <Login onLoginSuccess={handleLoginSuccess} />
+              <Login
+                onLoginSuccess={handleLoginSuccess}
+                onLoading={handleLoading}
+              />
             </>
           )}
         </div>
 
-        <div className="form-box form-right">
+        <div className={`form-box form-right ${isLoading ? "loading" : ""}`}>
           {isSignup && (
             <>
               <h2>Create Account</h2>
@@ -54,8 +59,7 @@ const AuthContainer = () => {
           )}
         </div>
 
-        {/* Green sliding panel with the toggle button */}
-        <div className="green-panel">
+        <div className={`green-panel ${isLoading ? "loading" : ""}`}>
           {isSignup ? (
             <>
               <h1>Welcome Back!</h1>
@@ -68,7 +72,6 @@ const AuthContainer = () => {
             <>
               <h1>Hello, Friend!</h1>
               <p>Enter your personal details and start your journey</p>
-
               <button onClick={toggleForm} className="panel-toggle-button">
                 Sign Up
               </button>

@@ -11,6 +11,32 @@
   justify-content: center;
   align-items: center;
   margin-top: 200px;
+  transition: opacity 0.3s ease;
+}
+
+.spinner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.auth-container .form-box,
+.auth-container .green-panel {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.auth-container.loading .form-box,
+.auth-container.loading .green-panel {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .auth-container .form-box {
@@ -36,7 +62,6 @@
   height: 100%;
   text-align: center;
   background-color: white;
-  opacity: 1;
 }
 
 .auth-container.signup-mode .form-left {
@@ -154,34 +179,13 @@
   margin-bottom: 20px;
 }
 
-.auth-container .linkedin-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 20px;
-  background-color: #fff;
-  color: #005582;
-  border: 1px solid #4b7a56;
-  border-radius: 50px;
-  font-weight: bold;
-  width: auto;
-  height: 40px;
-  gap: 10px;
-}
-
-.auth-container .linkedin-button:hover {
-  background-color: #005582;
-  color: #fff;
-  border: 1px solid #005582;
-}
-
+.auth-container .linkedin-button,
 .auth-container .google-button {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 10px 20px;
   background-color: #fff;
-  color: #db4437;
   border: 1px solid #4b7a56;
   border-radius: 50px;
   font-weight: bold;
@@ -190,10 +194,22 @@
   gap: 10px;
 }
 
+.auth-container .linkedin-button {
+  color: #005582;
+}
+
+.auth-container .linkedin-button:hover {
+  background-color: #005582;
+  color: #fff;
+}
+
+.auth-container .google-button {
+  color: #db4437;
+}
+
 .auth-container .google-button:hover {
   background-color: #c23321;
   color: #fff;
-  border: 1px solid #c23321;
 }
 
 .auth-container .forgot-divider {

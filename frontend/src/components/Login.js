@@ -1,15 +1,18 @@
 import React, { useState } from "react";
+import RingLoader from "react-spinners/RingLoader";
 
 const Login = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState("admin@admin");
   const [password, setPassword] = useState("admin");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccessMessage("");
+    setIsLoading(true);
 
     try {
       const response = await fetch("http://localhost:5000/auth/login", {
@@ -34,11 +37,22 @@ const Login = ({ onLoginSuccess }) => {
     } catch (error) {
       console.error("Error during login:", error);
       setError("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <form className="login-form" onSubmit={handleSubmit}>
+    <form
+      className={`login-form ${isLoading ? "loading" : ""}`}
+      onSubmit={handleSubmit}
+    >
+      {isLoading && (
+        <div className="spinner-overlay">
+          <RingLoader color="#36d7b7" size={75} />
+        </div>
+      )}
+
       <div className="input-container">
         <i className="fa fa-envelope icon"></i>
         <input
@@ -70,7 +84,9 @@ const Login = ({ onLoginSuccess }) => {
         Forgot your password?
       </a>
 
-      <button type="submit">Sign In</button>
+      <button type="submit" disabled={isLoading}>
+        Sign In
+      </button>
 
       <div className="social-buttons">
         <button className="linkedin-button">

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
 const Signup = () => {
-  const [fullName, setFullName] = useState("Ozan Özkaya");
-  const [email, setEmail] = useState("ozancanozkaya@gmail.com");
-  const [password, setPassword] = useState("123123");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("123123");
   const [errorMessage, setErrorMessage] = useState("");
 
